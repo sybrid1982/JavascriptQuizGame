@@ -84,6 +84,7 @@ Question.prototype.promptForAnswer = function(){
       var answerFunction = Question.prototype.checkAnswer.bind(this, indexShiftedByOne);
       button.onclick = answerFunction;
       button.setAttribute('class', 'button');
+      button.setAttribute('id', 'answer-' + indexShiftedByOne)
       answerForm.appendChild(button);
     }
   }
@@ -150,6 +151,18 @@ function CreateQuestions(){
 //
 
 function getQuestion(){
+  // Before we get started, there may already be a question up
+  // If there is, we need to clear the answers for that question
+  var answerForm = document.getElementById('Answers');
+  if(answerForm.childElementCount > 0){
+    for(var index = answerForm.childElementCount; index > 0; index--){
+      var buttonToRemove = document.getElementById('answer-' + index);
+      answerForm.removeChild(buttonToRemove);
+    }
+  }
+
+  // Probably shouldn't be doing ALL the set up every time
+  // but so far we are
   var questionArr = CreateQuestions();
   var questionToAsk = Math.random() * questionArr.length;
   questionToAsk = Math.floor(questionToAsk);
