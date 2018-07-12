@@ -40,9 +40,9 @@ function SetupQuestionPrototype(){
   Question.prototype.checkAnswer = function(answerNumber) {
     if(questionUnanswered === true){
       if(answerNumber == this.correctAnswer) {
-        console.log("That is correct!");
+        correctAnswer();
       } else {
-        console.log("That is unfortunately incorrect.  The correct answer was " + this.correctAnswer + ' and you chose ' + answerNumber + '.');
+        wrongAnswer();
       }
       // Once an answer has been picked, we should disable the ability to try other answers
       questionUnanswered = false;
@@ -52,9 +52,6 @@ function SetupQuestionPrototype(){
   Question.prototype.displayQuestion = function(){
     var questionDisplayArea = document.querySelector('#Question');
     questionDisplayArea.textContent = (this.question);
-    for(var i = 0; i < this.answers.length; i++) {
-      console.log((i + 1) + ') ' + this.answers[i]);
-    }
   }
 
 /***************************
@@ -155,6 +152,18 @@ function CreateQuestions(){
 //
 
 var questionUnanswered = false;
+var correctScore = 0;
+var wrongScore = 0;
+
+function correctAnswer(){
+  correctScore++;
+  document.getElementById('Correct').textContent = correctScore;
+}
+
+function wrongAnswer() {
+  wrongScore++;
+  document.getElementById('Wrong').textContent = wrongScore;
+}
 
 function getQuestion(){
   // Before we get started, there may already be a question up
