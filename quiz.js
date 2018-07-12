@@ -30,28 +30,28 @@ and doesn't interfere with other programmers' code.
 /////////////////////////////
 // Question Prototype Setup
 //
-
-var Question = function(question, answers, correctAnswer) {
-  this.question = question;
-  this.answers = answers;
-  this.correctAnswer = correctAnswer;
-}
-
-Question.prototype.checkAnswer = function(answerNumber) {
-  if(answerNumber == this.correctAnswer) {
-    console.log("That is correct!");
-  } else {
-    console.log("That is unfortunately incorrect.  The correct answer was " + this.correctAnswer + ' and you chose ' + answerNumber + '.');
+function SetupQuestionPrototype(){
+  var Question = function(question, answers, correctAnswer) {
+    this.question = question;
+    this.answers = answers;
+    this.correctAnswer = correctAnswer;
   }
-}
 
-Question.prototype.displayQuestion = function(){
-  var questionDisplayArea = document.querySelector('#Question');
-  questionDisplayArea.textContent = (this.question);
-  for(var i = 0; i < this.answers.length; i++) {
-    console.log((i + 1) + ') ' + this.answers[i]);
+  Question.prototype.checkAnswer = function(answerNumber) {
+    if(answerNumber == this.correctAnswer) {
+      console.log("That is correct!");
+    } else {
+      console.log("That is unfortunately incorrect.  The correct answer was " + this.correctAnswer + ' and you chose ' + answerNumber + '.');
+    }
   }
-}
+
+  Question.prototype.displayQuestion = function(){
+    var questionDisplayArea = document.querySelector('#Question');
+    questionDisplayArea.textContent = (this.question);
+    for(var i = 0; i < this.answers.length; i++) {
+      console.log((i + 1) + ') ' + this.answers[i]);
+    }
+  }
 
 /***************************
 * While this worked for a console.log-based version of the game, it's hot garbage for an HTML version
@@ -74,77 +74,83 @@ Question.prototype.promptForAnswer = function(){
 * will grab the buttons, put the text for the answers in the buttons,
 * and then put the question's check answer function on all five buttons
 */
-Question.prototype.displayAnswers = function(){
-  console.log('DisplayAnswers called');
-  var answerForm = document.getElementById('Answers');
-  for(var index = 0; index < this.answers.length; index++) {
-    var indexShiftedByOne = index + 1;
-    var button = document.createElement('button');
-    button.innerHTML = this.answers[index];
-    button.setAttribute('onclick', "this.checkAnswer(" + indexShiftedByOne + ")");
-    button.setAttribute('class', 'button');
-    answerForm.appendChild(button);
+  Question.prototype.displayAnswers = function(){
+    console.log('DisplayAnswers called');
+    var answerForm = document.getElementById('Answers');
+    for(var index = 0; index < this.answers.length; index++) {
+      var indexShiftedByOne = index + 1;
+      var button = document.createElement('button');
+      button.innerHTML = this.answers[index];
+      var answerFunction = Question.prototype.checkAnswer.bind(this, indexShiftedByOne);
+      button.onclick = answerFunction;
+      button.setAttribute('class', 'button');
+      answerForm.appendChild(button);
+    }
   }
-}
 
-Question.prototype.askQuestion = function() {
-  this.displayQuestion();
-  this.displayAnswers();
-}
+  Question.prototype.askQuestion = function() {
+    this.displayQuestion();
+    this.displayAnswers();
+  }
 
+  return Question;
+}
 //////////////////////////////////
 // Question Creation
 //
+function CreateQuestions(){
+  var Question = SetupQuestionPrototype();
 
-var saberAdvantage = new Question(
-  'Which of these classes does the Saber class have advantage over?',
-  ['Archer', 'Rider', 'Caster', 'Lancer', 'Assassin'],
-  4
-);
+  var saberAdvantage = new Question(
+    'Which of these classes does the Saber class have advantage over?',
+    ['Archer', 'Rider', 'Caster', 'Lancer', 'Assassin'],
+    4
+  );
 
-var artoriaClasses = new Question(
-  'Which of these classes does not have a version of Artoria/Altria?',
-  ['Archer', 'Rider', 'Caster', 'Assassin', 'Berserker'],
-  3
-);
+  var artoriaClasses = new Question(
+    'Which of these classes does not have a version of Artoria/Altria?',
+    ['Archer', 'Rider', 'Caster', 'Assassin', 'Berserker'],
+    3
+  );
 
-var lancerAdvantage = new Question(
-  'Which of these classes does the Lancer class have advantage over?',
-  ['Archer', 'Lancer', 'Caster', 'Assassin', 'Rider'],
-  1
-);
+  var lancerAdvantage = new Question(
+    'Which of these classes does the Lancer class have advantage over?',
+    ['Archer', 'Lancer', 'Caster', 'Assassin', 'Rider'],
+    1
+  );
 
-var archerAdvantage = new Question(
-  'Which of these classes does the Archer class have advantage over?',
-  ['Lancer', 'Saber', 'Caster', 'Assassin', 'Rider'],
-  2
-);
+  var archerAdvantage = new Question(
+    'Which of these classes does the Archer class have advantage over?',
+    ['Lancer', 'Saber', 'Caster', 'Assassin', 'Rider'],
+    2
+  );
 
-var assassinAdvantage = new Question(
-  'Which of these classes does the Assassin class have advantage over?',
-  ['Saber', 'Lancer', 'Caster', 'Archer', 'Rider'],
-  5
-);
+  var assassinAdvantage = new Question(
+    'Which of these classes does the Assassin class have advantage over?',
+    ['Saber', 'Lancer', 'Caster', 'Archer', 'Rider'],
+    5
+  );
 
-var riderAdvantage = new Question(
-  'Which of these classes does the Rider class have advantage over?',
-  ['Saber', 'Lancer', 'Caster', 'Assassin', 'Berserker'],
-  3
-);
+  var riderAdvantage = new Question(
+    'Which of these classes does the Rider class have advantage over?',
+    ['Saber', 'Lancer', 'Caster', 'Assassin', 'Berserker'],
+    3
+  );
 
-var casterAdvantage = new Question(
-  'Which of these classes does the Caster class have advantage over?',
-  ['Saber', 'Lancer', 'Archer', 'Assassin', 'Berserker'],
-  4
-);
+  var casterAdvantage = new Question(
+    'Which of these classes does the Caster class have advantage over?',
+    ['Saber', 'Lancer', 'Archer', 'Assassin', 'Berserker'],
+    4
+  );
 
-questionArr = [saberAdvantage, artoriaClasses, archerAdvantage, lancerAdvantage, riderAdvantage, casterAdvantage, assassinAdvantage];
-
+  return questionArr = [saberAdvantage, artoriaClasses, archerAdvantage, lancerAdvantage, riderAdvantage, casterAdvantage, assassinAdvantage];
+}
 //////////////////////////////
 // Function to get Question
 //
 
 function getQuestion(){
+  var questionArr = CreateQuestions();
   var questionToAsk = Math.random() * questionArr.length;
   questionToAsk = Math.floor(questionToAsk);
   questionArr[questionToAsk].askQuestion();
