@@ -31,6 +31,9 @@ header {
 
 #NewQuestion {
   margin: 20px;
+  width: 20%;
+  margin-left: 35%;
+  margin-right: 35%;
 }
 
 body {
@@ -54,10 +57,20 @@ body {
   font-size: 24px;
 }
 
+#Answers > button {
+  width: 40%;
+  text-align: center;
+}
+
 @media screen and (min-width:768px){
   #Answers {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    margin: 15px;
+  }
+
+  #Answers > button {
+    width: 15%;
   }
 }
