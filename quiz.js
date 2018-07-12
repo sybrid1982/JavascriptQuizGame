@@ -38,10 +38,14 @@ function SetupQuestionPrototype(){
   }
 
   Question.prototype.checkAnswer = function(answerNumber) {
-    if(answerNumber == this.correctAnswer) {
-      console.log("That is correct!");
-    } else {
-      console.log("That is unfortunately incorrect.  The correct answer was " + this.correctAnswer + ' and you chose ' + answerNumber + '.');
+    if(questionUnanswered === true){
+      if(answerNumber == this.correctAnswer) {
+        console.log("That is correct!");
+      } else {
+        console.log("That is unfortunately incorrect.  The correct answer was " + this.correctAnswer + ' and you chose ' + answerNumber + '.');
+      }
+      // Once an answer has been picked, we should disable the ability to try other answers
+      questionUnanswered = false;
     }
   }
 
@@ -150,10 +154,13 @@ function CreateQuestions(){
 // Function to get Question
 //
 
+var questionUnanswered = false;
+
 function getQuestion(){
   // Before we get started, there may already be a question up
   // If there is, we need to clear the answers for that question
   var answerForm = document.getElementById('Answers');
+  questionUnanswered = true;
   if(answerForm.childElementCount > 0){
     for(var index = answerForm.childElementCount; index > 0; index--){
       var buttonToRemove = document.getElementById('answer-' + index);
