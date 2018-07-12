@@ -25,7 +25,6 @@ header {
 
 #Answers {
   margin-bottom: 20px;
-  display: none;
 }
 
 #NewQuestion {
@@ -37,8 +36,14 @@ body {
   border: 2px solid navy;
 }
 
+#Answers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @media screen and (min-width:768px){
-  form {
+  #Answers {
     display: flex;
     flex-direction: row;
     justify-content: space-around;

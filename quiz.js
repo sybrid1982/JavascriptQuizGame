@@ -53,6 +53,13 @@ Question.prototype.displayQuestion = function(){
   }
 }
 
+/***************************
+* While this worked for a console.log-based version of the game, it's hot garbage for an HTML version
+* if only because the prompt call appears to block the page from being refreshed, which means you'd
+* never see the question displayed without some sort of workaround
+
+* A button based interface is better, anyways
+
 Question.prototype.promptForAnswer = function(){
   var answer
   do {
@@ -60,11 +67,29 @@ Question.prototype.promptForAnswer = function(){
   }
   while (isNaN(answer) === true)
   return answer;
+}*/
+
+/************************
+* This replaces the old 'promptForAnswer' function with one that
+* will grab the buttons, put the text for the answers in the buttons,
+* and then put the question's check answer function on all five buttons
+*/
+Question.prototype.displayAnswers = function(){
+  console.log('DisplayAnswers called');
+  var answerForm = document.getElementById('Answers');
+  for(var index = 0; index < this.answers.length; index++) {
+    var indexShiftedByOne = index + 1;
+    var button = document.createElement('button');
+    button.innerHTML = this.answers[index];
+    button.setAttribute('onclick', "this.checkAnswer(" + indexShiftedByOne + ")");
+    button.setAttribute('class', 'button');
+    answerForm.appendChild(button);
+  }
 }
 
 Question.prototype.askQuestion = function() {
   this.displayQuestion();
-  this.checkAnswer(this.promptForAnswer());
+  this.displayAnswers();
 }
 
 //////////////////////////////////
