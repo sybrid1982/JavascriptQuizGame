@@ -45,8 +45,13 @@ body {
 }
 
 .scoreLabel {
-  width: 20%;
-  font-size: 30px;
+  width: 15%;
+  border: 2px solid navy;
+  margin: 15px;
+}
+
+.score {
+  font-size: 24px;
 }
 
 @media screen and (min-width:768px){
