@@ -21,6 +21,8 @@ header {
 
 #QuestionBox {
   text-align: center;
+  display: flex;
+  justify-content: space-between;
 }
 
 #Answers {
@@ -40,6 +42,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.scoreLabel {
+  width: 20%;
+  font-size: 30px;
 }
 
 @media screen and (min-width:768px){
