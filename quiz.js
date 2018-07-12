@@ -27,6 +27,10 @@ and doesn't interfere with other programmers' code.
 
 */
 
+/////////////////////////////
+// Question Prototype Setup
+//
+
 var Question = function(question, answers, correctAnswer) {
   this.question = question;
   this.answers = answers;
@@ -42,7 +46,8 @@ Question.prototype.checkAnswer = function(answerNumber) {
 }
 
 Question.prototype.displayQuestion = function(){
-  console.log(this.question);
+  var questionDisplayArea = document.querySelector('#Question');
+  questionDisplayArea.textContent = (this.question);
   for(var i = 0; i < this.answers.length; i++) {
     console.log((i + 1) + ') ' + this.answers[i]);
   }
@@ -61,6 +66,10 @@ Question.prototype.askQuestion = function() {
   this.displayQuestion();
   this.checkAnswer(this.promptForAnswer());
 }
+
+//////////////////////////////////
+// Question Creation
+//
 
 var saberAdvantage = new Question(
   'Which of these classes does the Saber class have advantage over?',
@@ -106,8 +115,12 @@ var casterAdvantage = new Question(
 
 questionArr = [saberAdvantage, artoriaClasses, archerAdvantage, lancerAdvantage, riderAdvantage, casterAdvantage, assassinAdvantage];
 
-(function(){
+//////////////////////////////
+// Function to get Question
+//
+
+function getQuestion(){
   var questionToAsk = Math.random() * questionArr.length;
   questionToAsk = Math.floor(questionToAsk);
   questionArr[questionToAsk].askQuestion();
-})();
+}

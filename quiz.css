@@ -1,0 +1,46 @@
+.button{
+  padding: 20px 30px;
+  text-align: center;
+  font-size: 14px;
+  background-color: #4da6ff;
+  border: 1px solid navy;
+  color: black;
+}
+
+.button:hover {
+  background-color: navy;
+  color: white;
+}
+
+header {
+  text-align: center;
+  background-color: #4da6ff;
+  border: 2px solid navy;
+  margin-bottom: 20px;
+}
+
+#QuestionBox {
+  text-align: center;
+}
+
+#Answers {
+  margin-bottom: 20px;
+  display: none;
+}
+
+#NewQuestion {
+  margin: 20px;
+}
+
+body {
+  background-color: #99ccff;
+  border: 2px solid navy;
+}
+
+@media screen and (min-width:768px){
+  form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
