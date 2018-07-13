@@ -30,29 +30,31 @@ var questionController = (function() {
       if(questions.length > 0) {
         var questionToAsk = Math.random() * questions.length;
         questionToAsk = Math.floor(questionToAsk);
-        return (questions[questionToAsk]());
+        return (questions[questionToAsk]);
       } else {
         return -1;
       }
     }
-  };
-}();
+  }
+})();
 
 var uiController = (function() {
   // UI STUFF SHOULD GO HERE
-  displayAnswers = function(answers){
+  var displayAnswers = function(answers){
     var answerForm = document.getElementById('Answers');
-    for(var index = 0; index < answers.length; index++) {
-      var indexShiftedByOne = index + 1;
-      var button = document.createElement('button');
-      button.innerHTML = answers[index];
-      button.setAttribute('class', 'button');
-      button.setAttribute('id', 'answer-' + indexShiftedByOne)
-      answerForm.appendChild(button);
+    if(answers){
+      for(var index = 0; index < answers.length; index++) {
+        var indexShiftedByOne = index + 1;
+        var button = document.createElement('button');
+        button.innerHTML = answers[index];
+        button.setAttribute('class', 'button');
+        button.setAttribute('id', 'answer-' + indexShiftedByOne)
+        answerForm.appendChild(button);
+      }
     }
   }
 
-  displayQuestion(question) = function(){
+  var displayQuestion = function(question){
     var questionDisplayArea = document.querySelector('#Question');
     questionDisplayArea.textContent = (question);
   }
@@ -60,7 +62,7 @@ var uiController = (function() {
   var clearAnswers = function(){
     var answerForm = document.getElementById('Answers');
 
-    if(answerForm.childElementCount > 0){
+    if(answerForm !== null){
       for(var index = answerForm.childElementCount; index > 0; index--){
         var buttonToRemove = document.getElementById('answer-' + index);
         answerForm.removeChild(buttonToRemove);
@@ -69,23 +71,25 @@ var uiController = (function() {
   }
 
   return {
-    clearAnswers: clearAnswers(),
-    displayAnswers: displayAnswers(answers),
-    displayQuestion: displayQuestion(question)
+    clearAnswers: function() { clearAnswers() },
+    displayAnswers: function(answers) { displayAnswers(answers) },
+    displayQuestion: function(question) { displayQuestion(question) }
   };
-});
+})();
 
 var appController = (function(questionCtrl, UICtrl) {
   var questionUnanswered = false;
   var correctScore = 0;
   var wrongScore = 0;
 
-  function correctAnswer(){
+  // Hook up the newQuestion button
+
+  var correctAnswerFn = function(){
     correctScore++;
     document.getElementById('Correct').textContent = correctScore;
   }
 
-  function wrongAnswer() {
+  var wrongAnswerFn = function() {
     wrongScore++;
     document.getElementById('Wrong').textContent = wrongScore;
   }
@@ -105,23 +109,29 @@ var appController = (function(questionCtrl, UICtrl) {
     // the callbacks here?
     // Display the answers
     UICtrl.displayAnswers(question.answers);
+    generateCallbacks(question.answers, question.correctAnswer);
 
     var correctAnswer = question.correctAnswer;
   }
 
   var evaluateAnswer = function(answerIndex, correctAnswer) {
-    if(answerIndex === correctAnswer) {
-      correctAnswer();
-    } else {
-      wrongAnswer();
+    if(questionUnanswered === true){
+      if(answerIndex === correctAnswer) {
+        correctAnswerFn();
+      } else {
+        wrongAnswerFn();
+      }
     }
+    questionUnanswered = false;
   }
 
-  var generateCallbacks(answers, correctAnswer) {
-    for(var index = 0; index < answers.length; index++) {
-      var indexShiftedByOne = index + 1;
-      var answerFunction = evaluateAnswer.bind(null, indexShiftedByOne, correctAnswer);
-      document.getElementById('answer-' + indexShiftedByOne).onclick = answerFunction;
+  var generateCallbacks = function(answers, correctAnswer) {
+    if(answers){
+      for(var index = 0; index < answers.length; index++) {
+        var indexShiftedByOne = index + 1;
+        var answerFunction = evaluateAnswer.bind(null, indexShiftedByOne, correctAnswer);
+        document.getElementById('answer-' + indexShiftedByOne).onclick = answerFunction;
+      }
     }
   }
 
@@ -169,8 +179,10 @@ var appController = (function(questionCtrl, UICtrl) {
     );
   }
 
+  document.querySelector('#ask-new-question').addEventListener('click', getQuestion);
+
   return {
     getQuestion: getQuestion(),
     generateQuestions: generateQuestions()
   }
-})(questionController, UIController);
+})(questionController, uiController);
