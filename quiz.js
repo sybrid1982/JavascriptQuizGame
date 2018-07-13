@@ -1,36 +1,8 @@
-////////////////////////////////
-// CODING CHALLENGE
-
-/*************
-1)  Function constructor called Question to describe a question.  A question should include:
-a)  question itself
-b)  the answers from which the player can choose the correct one (choose adequate data structure for this)
-c)  Correct answer (I would use a number for this)
-DONE
-
-2)  Create a couple of questions using the Constructor
-
-3)  Store them all inside an array
-
-4)  Select one random question and log it on the console, together with the possible answers (each
-question should have a number) (hint: write a method for the question objects for this task).
-
-5)  Use the prompt function to ask the user for the correct answer.  The user should input a number
-for the correct answer as displayed by task 4.
-DONE
-
-6)  Check if the answer is correct and print to the console whether it was correct or not.
-DONE
-
-7)  Suppose this code would be a plugin for other programmers to use in their code.  Make sure your code is private
-and doesn't interfere with other programmers' code.
-
-*/
-
 /////////////////////////////
 // Question Prototype Setup
 //
-function SetupQuestionPrototype(){
+
+var questionController = (function() {
   var Question = function(question, answers, correctAnswer) {
     this.question = question;
     this.answers = answers;
@@ -40,147 +12,165 @@ function SetupQuestionPrototype(){
   Question.prototype.checkAnswer = function(answerNumber) {
     if(questionUnanswered === true){
       if(answerNumber == this.correctAnswer) {
-        correctAnswer();
+        return true;
       } else {
-        wrongAnswer();
+        return false;
       }
-      // Once an answer has been picked, we should disable the ability to try other answers
-      questionUnanswered = false;
     }
   }
 
-  Question.prototype.displayQuestion = function(){
-    var questionDisplayArea = document.querySelector('#Question');
-    questionDisplayArea.textContent = (this.question);
-  }
+  var questions = [];
 
-/***************************
-* While this worked for a console.log-based version of the game, it's hot garbage for an HTML version
-* if only because the prompt call appears to block the page from being refreshed, which means you'd
-* never see the question displayed without some sort of workaround
+  return {
+    createQuestion: function(question, answers, correctAnswer) {
+      var question = new Question(question, answers, correctAnswer);
+      questions.push(question);
+    },
+    getQuestion: function() {
+      if(questions.length > 0) {
+        var questionToAsk = Math.random() * questions.length;
+        questionToAsk = Math.floor(questionToAsk);
+        return (questions[questionToAsk]());
+      } else {
+        return -1;
+      }
+    }
+  };
+}();
 
-* A button based interface is better, anyways
-
-Question.prototype.promptForAnswer = function(){
-  var answer
-  do {
-      answer = prompt('Please enter the number for your answer');
-  }
-  while (isNaN(answer) === true)
-  return answer;
-}*/
-
-/************************
-* This replaces the old 'promptForAnswer' function with one that
-* will grab the buttons, put the text for the answers in the buttons,
-* and then put the question's check answer function on all five buttons
-*/
-  Question.prototype.displayAnswers = function(){
-    console.log('DisplayAnswers called');
+var uiController = (function() {
+  // UI STUFF SHOULD GO HERE
+  displayAnswers = function(answers){
     var answerForm = document.getElementById('Answers');
-    for(var index = 0; index < this.answers.length; index++) {
+    for(var index = 0; index < answers.length; index++) {
       var indexShiftedByOne = index + 1;
       var button = document.createElement('button');
-      button.innerHTML = this.answers[index];
-      var answerFunction = Question.prototype.checkAnswer.bind(this, indexShiftedByOne);
-      button.onclick = answerFunction;
+      button.innerHTML = answers[index];
       button.setAttribute('class', 'button');
       button.setAttribute('id', 'answer-' + indexShiftedByOne)
       answerForm.appendChild(button);
     }
   }
 
-  Question.prototype.askQuestion = function() {
-    this.displayQuestion();
-    this.displayAnswers();
+  displayQuestion(question) = function(){
+    var questionDisplayArea = document.querySelector('#Question');
+    questionDisplayArea.textContent = (question);
   }
 
-  return Question;
-}
-//////////////////////////////////
-// Question Creation
-//
-function CreateQuestions(){
-  var Question = SetupQuestionPrototype();
+  var clearAnswers = function(){
+    var answerForm = document.getElementById('Answers');
 
-  var saberAdvantage = new Question(
-    'Which of these classes does the Saber class have advantage over?',
-    ['Archer', 'Rider', 'Caster', 'Lancer', 'Assassin'],
-    4
-  );
-
-  var artoriaClasses = new Question(
-    'Which of these classes does not have a version of Artoria/Altria?',
-    ['Archer', 'Rider', 'Caster', 'Assassin', 'Berserker'],
-    3
-  );
-
-  var lancerAdvantage = new Question(
-    'Which of these classes does the Lancer class have advantage over?',
-    ['Archer', 'Lancer', 'Caster', 'Assassin', 'Rider'],
-    1
-  );
-
-  var archerAdvantage = new Question(
-    'Which of these classes does the Archer class have advantage over?',
-    ['Lancer', 'Saber', 'Caster', 'Assassin', 'Rider'],
-    2
-  );
-
-  var assassinAdvantage = new Question(
-    'Which of these classes does the Assassin class have advantage over?',
-    ['Saber', 'Lancer', 'Caster', 'Archer', 'Rider'],
-    5
-  );
-
-  var riderAdvantage = new Question(
-    'Which of these classes does the Rider class have advantage over?',
-    ['Saber', 'Lancer', 'Caster', 'Assassin', 'Berserker'],
-    3
-  );
-
-  var casterAdvantage = new Question(
-    'Which of these classes does the Caster class have advantage over?',
-    ['Saber', 'Lancer', 'Archer', 'Assassin', 'Berserker'],
-    4
-  );
-
-  return questionArr = [saberAdvantage, artoriaClasses, archerAdvantage, lancerAdvantage, riderAdvantage, casterAdvantage, assassinAdvantage];
-}
-//////////////////////////////
-// Function to get Question
-//
-
-var questionUnanswered = false;
-var correctScore = 0;
-var wrongScore = 0;
-
-function correctAnswer(){
-  correctScore++;
-  document.getElementById('Correct').textContent = correctScore;
-}
-
-function wrongAnswer() {
-  wrongScore++;
-  document.getElementById('Wrong').textContent = wrongScore;
-}
-
-function getQuestion(){
-  // Before we get started, there may already be a question up
-  // If there is, we need to clear the answers for that question
-  var answerForm = document.getElementById('Answers');
-  questionUnanswered = true;
-  if(answerForm.childElementCount > 0){
-    for(var index = answerForm.childElementCount; index > 0; index--){
-      var buttonToRemove = document.getElementById('answer-' + index);
-      answerForm.removeChild(buttonToRemove);
+    if(answerForm.childElementCount > 0){
+      for(var index = answerForm.childElementCount; index > 0; index--){
+        var buttonToRemove = document.getElementById('answer-' + index);
+        answerForm.removeChild(buttonToRemove);
+      }
     }
   }
 
-  // Probably shouldn't be doing ALL the set up every time
-  // but so far we are
-  var questionArr = CreateQuestions();
-  var questionToAsk = Math.random() * questionArr.length;
-  questionToAsk = Math.floor(questionToAsk);
-  questionArr[questionToAsk].askQuestion();
-}
+  return {
+    clearAnswers: clearAnswers(),
+    displayAnswers: displayAnswers(answers),
+    displayQuestion: displayQuestion(question)
+  };
+});
+
+var appController = (function(questionCtrl, UICtrl) {
+  var questionUnanswered = false;
+  var correctScore = 0;
+  var wrongScore = 0;
+
+  function correctAnswer(){
+    correctScore++;
+    document.getElementById('Correct').textContent = correctScore;
+  }
+
+  function wrongAnswer() {
+    wrongScore++;
+    document.getElementById('Wrong').textContent = wrongScore;
+  }
+
+  var getQuestion = function(){
+    questionUnanswered = true;
+    // Before we get started, there may already be a question up
+    // If there is, we need to clear the answers for that question
+    UICtrl.clearAnswers();
+    // Now get the question
+    var question = questionCtrl.getQuestion();
+    // Display the question text
+    UICtrl.displayQuestion(question.question);
+    // Do we need to first make functions here for the answers to then pass
+    // to displayAnswers?  Or can we create the buttons in displayAnswers
+    // then iterate over the presumed children that should be made and set
+    // the callbacks here?
+    // Display the answers
+    UICtrl.displayAnswers(question.answers);
+
+    var correctAnswer = question.correctAnswer;
+  }
+
+  var evaluateAnswer = function(answerIndex, correctAnswer) {
+    if(answerIndex === correctAnswer) {
+      correctAnswer();
+    } else {
+      wrongAnswer();
+    }
+  }
+
+  var generateCallbacks(answers, correctAnswer) {
+    for(var index = 0; index < answers.length; index++) {
+      var indexShiftedByOne = index + 1;
+      var answerFunction = evaluateAnswer.bind(null, indexShiftedByOne, correctAnswer);
+      document.getElementById('answer-' + indexShiftedByOne).onclick = answerFunction;
+    }
+  }
+
+  var generateQuestions = function() {
+    questionCtrl.createQuestion(
+      'Which of these classes does the Saber class have advantage over?',
+      ['Archer', 'Rider', 'Caster', 'Lancer', 'Assassin'],
+      4
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does not have a version of Artoria/Altria?',
+      ['Archer', 'Rider', 'Caster', 'Assassin', 'Berserker'],
+      3
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does the Lancer class have advantage over?',
+      ['Archer', 'Lancer', 'Caster', 'Assassin', 'Rider'],
+      1
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does the Archer class have advantage over?',
+      ['Lancer', 'Saber', 'Caster', 'Assassin', 'Rider'],
+      2
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does the Assassin class have advantage over?',
+      ['Saber', 'Lancer', 'Caster', 'Archer', 'Rider'],
+      5
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does the Rider class have advantage over?',
+      ['Saber', 'Lancer', 'Caster', 'Assassin', 'Berserker'],
+      3
+    );
+
+    questionCtrl.createQuestion(
+      'Which of these classes does the Caster class have advantage over?',
+      ['Saber', 'Lancer', 'Archer', 'Assassin', 'Berserker'],
+      4
+    );
+  }
+
+  return {
+    getQuestion: getQuestion(),
+    generateQuestions: generateQuestions()
+  }
+})(questionController, UIController);
